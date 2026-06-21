@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Outfit:wght@100..900&display=swap');
+
+/* Style configurations for Tailwind v4 */
+:root {
+  --font-sans: 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Lora', Georgia, serif;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: #0b130e; /* Deep forest dark mode by default */
+  color: #e2e8f0;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Custom scrollbar to match the organic nature theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #060907;
+}
+::-webkit-scrollbar-thumb {
+  background: #142c1e;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #1f422e;
+}
+
+/* Ambient Wind Sway Animations */
+@keyframes wind-sway-gentle {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(1.5deg); }
+}
+
+@keyframes wind-sway-medium {
+  0%, 100% { transform: rotate(-1deg); }
+  50% { transform: rotate(2deg); }
+}
+
+@keyframes wind-sway-leaf {
+  0%, 100% { transform: rotate(0deg) skewX(0deg); }
+  50% { transform: rotate(3deg) skewX(1deg); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  50% { transform: translateY(-10px) translateX(5px); }
+}
+
+@keyframes float-particles {
+  0% { transform: translateY(105vh) translateX(0px) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.6; }
+  100% { transform: translateY(-5vh) translateX(50px) rotate(360deg); opacity: 0; }
+}
+
+.animate-wind-gentle {
+  animation: wind-sway-gentle 6s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.animate-wind-medium {
+  animation: wind-sway-medium 4s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.animate-wind-leaf {
+  animation: wind-sway-leaf 3s ease-in-out infinite;
+  transform-origin: left bottom;
+}
+
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Glassmorphism utility classes */
+.glass-panel {
+  background: rgba(15, 27, 20, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(34, 197, 94, 0.15);
+}
+
+.glass-panel-light {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-card-hover {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-card-hover:hover {
+  transform: translateY(-4px);
+  border-color: rgba(34, 197, 94, 0.3);
+  box-shadow: 0 12px 30px -10px rgba(16, 185, 129, 0.2);
+  background: rgba(20, 36, 26, 0.7);
+}
+
+/* Custom styled text gradients */
+.text-gradient-emerald {
+  background: linear-gradient(135deg, #a7f3d0 0%, #10b981 50%, #047857 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-sky {
+  background: linear-gradient(135deg, #bae6fd 0%, #0284c7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #fef08a 0%, #eab308 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-sunset {
+  background: linear-gradient(135deg, #fed7aa 0%, #f97316 50%, #dc2626 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Cloud translation paths */
+@keyframes cloud-move-slow {
+  0% { transform: translateX(-150%); }
+  100% { transform: translateX(150%); }
+}
+
+.animate-cloud-slow {
+  animation: cloud-move-slow 120s linear infinite;
+}
+
+.animate-cloud-medium {
+  animation: cloud-move-slow 80s linear infinite;
+}
+
+.animate-cloud-fast {
+  animation: cloud-move-slow 40s linear infinite;
+}
