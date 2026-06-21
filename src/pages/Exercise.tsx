@@ -13,10 +13,19 @@ interface MetricCardProps {
   id: string;
   onIncrement: () => void;
   onDecrement: () => void;
-  step: number;
 }
 
-const MetricCard: React.FC<MetricCardProps> = ({ icon: Icon, label, value, unit, target, color, id, onIncrement, onDecrement, step }) => {
+  const MetricCard: React.FC<MetricCardProps> = ({
+  icon: Icon,
+  label,
+  value,
+  unit,
+  target,
+  color,
+  id,
+  onIncrement,
+  onDecrement
+}) => {
   const pct = Math.min(100, (value / target) * 100);
 
   return (
@@ -60,7 +69,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ icon: Icon, label, value, unit,
 };
 
 export const Exercise: React.FC = () => {
-  const { exercise, updateExercise, tasks, footprintsRestoredCount } = useApp();
+  const { exercise, updateExercise } = useApp();
 
   const totalContribution = Math.round(
     (Math.min(1, exercise.steps / 10000) + Math.min(1, exercise.waterIntake / 2000) + Math.min(1, exercise.outdoorMinutes / 30)) / 3 * 20
@@ -105,7 +114,6 @@ export const Exercise: React.FC = () => {
           unit="steps"
           target={10000}
           color="emerald"
-          step={500}
           onIncrement={() => updateExercise('steps', exercise.steps + 500)}
           onDecrement={() => updateExercise('steps', exercise.steps - 500)}
         />
@@ -117,7 +125,6 @@ export const Exercise: React.FC = () => {
           unit="ml"
           target={2000}
           color="sky"
-          step={200}
           onIncrement={() => updateExercise('waterIntake', exercise.waterIntake + 200)}
           onDecrement={() => updateExercise('waterIntake', exercise.waterIntake - 200)}
         />
@@ -129,7 +136,6 @@ export const Exercise: React.FC = () => {
           unit="min"
           target={30}
           color="green"
-          step={5}
           onIncrement={() => updateExercise('outdoorMinutes', exercise.outdoorMinutes + 5)}
           onDecrement={() => updateExercise('outdoorMinutes', exercise.outdoorMinutes - 5)}
         />
@@ -141,7 +147,6 @@ export const Exercise: React.FC = () => {
           unit="min"
           target={30}
           color="amber"
-          step={5}
           onIncrement={() => updateExercise('cyclingMinutes', exercise.cyclingMinutes + 5)}
           onDecrement={() => updateExercise('cyclingMinutes', exercise.cyclingMinutes - 5)}
         />

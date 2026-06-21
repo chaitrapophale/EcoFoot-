@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Check, X, Tag } from 'lucide-react';
-import { useApp, Task } from '../context/AppContext';
+import { Plus, Trash2, Check, X } from 'lucide-react';
+import { useApp } from '../context/AppContext';
+import type { Task } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 
 const CATEGORIES: { value: Task['category']; label: string; icon: string; color: string }[] = [
@@ -39,7 +40,6 @@ export const CustomJourney: React.FC = () => {
   const completedCount = tasks.filter(t => t.completed).length;
   const completionPct = tasks.length > 0 ? Math.round((completedCount / tasks.length) * 100) : 0;
 
-  const getCatColor = (cat: Task['category']) => CATEGORIES.find(c => c.value === cat)?.color || 'slate';
   const getCatIcon = (cat: Task['category']) => CATEGORIES.find(c => c.value === cat)?.icon || '📌';
 
   return (

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useApp, getTodayDateString } from '../context/AppContext';
+import { useApp } from '../context/AppContext';
 import { LivingFootprint } from '../components/LivingFootprint';
 import { Flame, Star, Calendar, Leaf } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -26,7 +26,6 @@ export const Profile: React.FC = () => {
     );
   }
 
-  const today = getTodayDateString();
   const completedCount = tasks.filter(t => t.completed).length;
   const totalCount = tasks.length;
   const taskRatio = totalCount > 0 ? completedCount / totalCount : 0;

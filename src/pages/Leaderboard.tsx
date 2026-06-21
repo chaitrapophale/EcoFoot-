@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useApp } from '../context/AppContext';
-import { Trophy, Flame } from 'lucide-react';
 
 const MOCK_LEADERBOARD = [
   { rank: 1, username: 'NatureNomad_Priya', avatar: '🧕', ecoTitle: 'Planet Champion', currentStreak: 87, footprintsRestored: 87, tasksCompleted: 624, level: 42, badge: '🌏' },
@@ -15,8 +14,7 @@ const MOCK_LEADERBOARD = [
 ];
 
 export const Leaderboard: React.FC = () => {
-  const { user, footprintsRestoredCount, currentStreak, tasks } = useApp();
-  const totalTasksDone = tasks.filter(t => t.completed).length;
+  const { user, footprintsRestoredCount } = useApp();
 
   const rankColors: Record<number, string> = {
     1: 'text-amber-400',

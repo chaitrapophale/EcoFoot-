@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Home, Leaf, TreePine, Trophy, User, Dumbbell, Menu, X, Settings, Map, LogIn } from 'lucide-react';
 import { useApp } from '../context/AppContext';
@@ -23,7 +23,6 @@ const NAV_ITEMS: NavItem[] = [
 
 export const Navigation: React.FC = () => {
   const { user } = useApp();
-  const location = useLocation();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
