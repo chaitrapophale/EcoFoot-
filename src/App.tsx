@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -22,6 +22,21 @@ import { Settings } from './pages/Settings';
 import { NotFound } from './pages/NotFound';
 
 const queryClient = new QueryClient();
+
+const PAGE_TITLES: Record<string, string> = {
+  '/': 'EcoFoot | Home',
+  '/auth': 'EcoFoot | Sign In',
+  '/choose-journey': 'EcoFoot | Choose Journey',
+  '/journey/ai': 'EcoFoot | AI Journey',
+  '/journey/custom': 'EcoFoot | Custom Journey',
+  '/footprint': 'EcoFoot | Footprint',
+  '/forest': 'EcoFoot | Forest Trail',
+  '/exercise': 'EcoFoot | Wellness',
+  '/leaderboard': 'EcoFoot | Leaderboard',
+  '/achievements': 'EcoFoot | Achievements',
+  '/profile': 'EcoFoot | Profile',
+  '/settings': 'EcoFoot | Settings'
+};
 
 // Achievement unlock toast
 const AchievementToast: React.FC = () => {
@@ -65,11 +80,16 @@ const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) =
 const AppRoutes: React.FC = () => {
   const location = useLocation();
 
+  useEffect(() => {
+    const title = PAGE_TITLES[location.pathname] || 'EcoFoot';
+    document.title = title;
+  }, [location.pathname]);
+
   return (
     <>
       <AmbientEnv />
       <Navigation />
-      <main className="relative z-10 lg:pl-52 pb-20 lg:pb-0 pt-14 lg:pt-0">
+      <main aria-label="Main content" className="relative z-10 lg:pl-52 pb-20 lg:pb-0 pt-14 lg:pt-0">
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<PageTransition><Home /></PageTransition>} />

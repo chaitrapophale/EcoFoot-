@@ -14,9 +14,17 @@ export const Auth: React.FC = () => {
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+
+    if (mode !== 'forgot' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -79,6 +87,15 @@ export const Auth: React.FC = () => {
           </div>
         )}
 
+        {error && (
+          <div
+            aria-live="assertive"
+            className="mb-4 px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-300 text-sm text-center"
+          >
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === 'signup' && (
             <div>
@@ -104,7 +121,10 @@ export const Auth: React.FC = () => {
               autoComplete="email"
               required
               value={formData.email}
-              onChange={e => setFormData(p => ({ ...p, email: e.target.value }))}
+              onChange={e => {
+                setFormData(p => ({ ...p, email: e.target.value }));
+                if (error) setError('');
+              }}
               placeholder="you@ecofoot.app"
               className="w-full bg-white/5 border border-white/10 text-white placeholder-slate-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500/50 focus:bg-white/8 transition-all"
             />

@@ -29,7 +29,7 @@ export const Navigation: React.FC = () => {
   return (
     <>
       {/* Desktop Sidebar */}
-      <nav className="fixed left-4 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col gap-1.5 glass-panel rounded-2xl p-2 border border-white/8 shadow-xl shadow-black/30">
+      <nav aria-label="Primary navigation" className="fixed left-4 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col gap-1.5 glass-panel rounded-2xl p-2 border border-white/8 shadow-xl shadow-black/30">
         {NAV_ITEMS.map(item => (
           <NavLink
             key={item.path}
@@ -37,7 +37,7 @@ export const Navigation: React.FC = () => {
             id={item.id}
             end={item.path === '/'}
             className={({ isActive }) =>
-              `flex items-center gap-2 px-3 py-2.5 rounded-xl transition-all duration-200 group relative ${
+              `flex items-center gap-2 px-3 py-2.5 rounded-xl transition-all duration-200 group relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 ${
                 isActive
                   ? 'bg-emerald-500/20 text-emerald-400'
                   : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'
@@ -64,7 +64,7 @@ export const Navigation: React.FC = () => {
           to="/settings"
           id="nav-settings"
           className={({ isActive }) =>
-            `flex items-center gap-2 px-3 py-2.5 rounded-xl transition-all duration-200 ${
+            `flex items-center gap-2 px-3 py-2.5 rounded-xl transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 ${
               isActive ? 'bg-emerald-500/20 text-emerald-400' : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'
             }`
           }
@@ -76,7 +76,7 @@ export const Navigation: React.FC = () => {
           <button
             id="nav-signin"
             onClick={() => navigate('/auth')}
-            className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-emerald-400 hover:bg-emerald-500/10 transition-all text-sm font-medium"
+            className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-emerald-400 hover:bg-emerald-500/10 transition-all text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
           >
             <LogIn className="w-5 h-5" />
             Sign In
@@ -89,7 +89,7 @@ export const Navigation: React.FC = () => {
         <span className="text-white font-bold text-lg" style={{ fontFamily: 'Lora, serif' }}>
           <span className="text-gradient-emerald">Eco</span>Foot
         </span>
-        <button id="mobile-menu-btn" onClick={() => setMenuOpen(!menuOpen)} className="text-slate-400 hover:text-white p-1">
+        <button id="mobile-menu-btn" aria-label="Toggle navigation menu" onClick={() => setMenuOpen(!menuOpen)} className="text-slate-400 hover:text-white p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 rounded-lg">
           {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
@@ -114,7 +114,7 @@ export const Navigation: React.FC = () => {
                   end={item.path === '/'}
                   onClick={() => setMenuOpen(false)}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-4 py-3 rounded-2xl transition-all ${
+                    `flex items-center gap-3 px-4 py-3 rounded-2xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 ${
                       isActive
                         ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/25'
                         : 'text-slate-300 glass-panel'
@@ -129,7 +129,7 @@ export const Navigation: React.FC = () => {
                 <button
                   id="mobile-nav-signin"
                   onClick={() => { navigate('/auth'); setMenuOpen(false); }}
-                  className="flex items-center gap-3 px-4 py-3 mt-2 bg-emerald-500 text-white rounded-2xl font-semibold"
+                  className="flex items-center gap-3 px-4 py-3 mt-2 bg-emerald-500 text-white rounded-2xl font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
                 >
                   <LogIn className="w-5 h-5" />
                   Sign In / Sign Up
@@ -150,7 +150,7 @@ export const Navigation: React.FC = () => {
               id={`bottom-${item.id}`}
               end={item.path === '/'}
               className={({ isActive }) =>
-                `flex-1 flex flex-col items-center py-2 gap-0.5 transition-all ${
+                `flex-1 flex flex-col items-center py-2 gap-0.5 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 ${
                   isActive ? 'text-emerald-400' : 'text-slate-600 hover:text-slate-400'
                 }`
               }

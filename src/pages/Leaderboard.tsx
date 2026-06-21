@@ -22,6 +22,15 @@ export const Leaderboard: React.FC = () => {
     3: 'text-amber-600'
   };
 
+  const topPercentile = Math.max(1, Math.min(99, Math.round((1 - Math.min(1, footprintsRestoredCount / 120)) * 100)));
+  const userRankLabel = user
+    ? footprintsRestoredCount >= 80
+      ? 'Top 1% Explorer'
+      : footprintsRestoredCount >= 40
+        ? 'Rising Eco Leader'
+        : 'Getting Started'
+    : 'Join the challenge';
+
   return (
     <div className="min-h-screen px-4 py-20 max-w-3xl mx-auto">
       {/* Header */}
@@ -45,13 +54,21 @@ export const Leaderboard: React.FC = () => {
             <div className="text-3xl">🌍</div>
             <div className="flex-1">
               <p className="text-white font-semibold">{user.username}</p>
-              <p className="text-slate-500 text-sm">Seedling • Rank #9+</p>
+              <p className="text-slate-500 text-sm">{userRankLabel}</p>
             </div>
             <div className="text-right">
               <p className="text-emerald-400 font-bold">{footprintsRestoredCount}</p>
               <p className="text-slate-600 text-xs">footprints</p>
             </div>
           </div>
+          <div className="mt-4 h-2.5 bg-white/8 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full"
+              animate={{ width: `${Math.min(100, topPercentile)}%` }}
+              transition={{ duration: 0.5 }}
+            />
+          </div>
+          <p className="text-slate-500 text-xs mt-2">Top {topPercentile}% of EcoFoot explorers</p>
         </motion.div>
       )}
 

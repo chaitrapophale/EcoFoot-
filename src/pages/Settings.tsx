@@ -7,6 +7,7 @@ import { LogOut, Trash2, Info } from 'lucide-react';
 export const Settings: React.FC = () => {
   const { user, logout, resetAllData } = useApp();
   const navigate = useNavigate();
+  const appVersion = '1.0.0';
 
   const handleLogout = () => {
     logout();
@@ -48,12 +49,22 @@ export const Settings: React.FC = () => {
           <div className="flex items-start gap-3">
             <Info className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
             <div>
-              <p className="text-white font-medium">EcoFoot v1.0.0</p>
+              <p className="text-white font-medium">EcoFoot v{appVersion}</p>
               <p className="text-slate-500 text-sm mt-1 leading-relaxed">
                 An immersive sustainability experience designed to emotionally connect you with your ecological impact.
                 Built with ❤️ for hackathon 2025.
               </p>
             </div>
+          </div>
+        </div>
+
+        {/* Quick Tips */}
+        <div className="glass-panel rounded-2xl p-5 border border-white/5">
+          <h2 className="text-slate-400 text-xs uppercase tracking-widest mb-3">Quick Tips</h2>
+          <div className="space-y-2 text-sm text-slate-400">
+            <p>• Complete small daily actions to grow your forest trail faster.</p>
+            <p>• Track steps, hydration, and outdoor time for bonus footprint progress.</p>
+            <p>• Use the AI journey feature if you want a personalized checklist.</p>
           </div>
         </div>
 

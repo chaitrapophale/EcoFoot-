@@ -133,6 +133,14 @@ const INITIAL_ACHIEVEMENTS: Achievement[] = [
   { id: 'planet_champion', name: 'Planet Champion', description: 'Reach the Nature Sanctuary milestone (100 days)', unlocked: false }
 ];
 
+const INITIAL_EXERCISE: ExerciseLog = {
+  steps: 0,
+  waterIntake: 0,
+  walkingMinutes: 0,
+  cyclingMinutes: 0,
+  outdoorMinutes: 0
+};
+
 export const getTodayDateString = () => {
   const d = new Date();
   return d.toISOString().split('T')[0];
@@ -148,13 +156,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   );
 
   const [exercise, setExercise] = useState<ExerciseLog>(() =>
-    safeReadStorage(STORAGE_KEYS.exercise, {
-      steps: 0,
-      waterIntake: 0,
-      walkingMinutes: 0,
-      cyclingMinutes: 0,
-      outdoorMinutes: 0
-    })
+    safeReadStorage(STORAGE_KEYS.exercise, INITIAL_EXERCISE)
   );
 
   const [dayRecords, setDayRecords] = useState<Record<string, DayRecord>>(() =>
@@ -244,7 +246,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setUser(null);
     setJourneyType(null);
     setTasks(DEFAULT_TASKS);
-    setExercise({ steps: 0, waterIntake: 0, walkingMinutes: 0, cyclingMinutes: 0, outdoorMinutes: 0 });
+    setExercise(INITIAL_EXERCISE);
     setDayRecords({});
     setAchievements(INITIAL_ACHIEVEMENTS);
     setCurrentStreak(0);
@@ -313,23 +315,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const completeToday = () => {
     const today = getTodayDateString();
-    
-    // Calculate current restoration percentage
-    // Tasks: 80% weight, Exercise: 20% weight
+
+    if (dayRecords[today]) return;
+
     const completedTasksCount = tasks.filter((t) => t.completed).length;
     const totalTasksCount = tasks.length;
     const taskRatio = totalTasksCount > 0 ? completedTasksCount / totalTasksCount : 1;
-    
-    // Exercise contributions: steps (target 10000), water (target 2000), outdoor (target 30)
+
     const stepsRatio = Math.min(1, exercise.steps / 10000);
     const waterRatio = Math.min(1, exercise.waterIntake / 2000);
     const outdoorRatio = Math.min(1, exercise.outdoorMinutes / 30);
     const exerciseRatio = (stepsRatio + waterRatio + outdoorRatio) / 3;
 
     const percentage = Math.round((taskRatio * 80) + (exerciseRatio * 20));
-    const isRestored = percentage >= 80; // considered restored if >= 80%
+    const isRestored = percentage >= 80;
 
-    // Create record
     const record: DayRecord = {
       dateString: today,
       completedTasks: tasks.filter((t) => t.completed).map((t) => t.id),
@@ -338,36 +338,36 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       restored: isRestored
     };
 
-    setDayRecords((prev) => ({ ...prev, [today]: record }));
+    setDayRecords((prev) => {
+      const nextRecords = { ...prev, [today]: record };
+      const totalDaysCount = Object.keys(nextRecords).length;
 
-    if (isRestored) {
-      setFootprintsRestoredCount((prev) => {
-        const next = prev + 1;
-        if (next >= 10) triggerUnlock('nature_guardian');
-        return next;
-      });
+      if (isRestored) {
+        setFootprintsRestoredCount((count) => {
+          const next = count + 1;
+          if (next >= 10) triggerUnlock('nature_guardian');
+          return next;
+        });
 
-      triggerUnlock('eco_starter');
+        triggerUnlock('eco_starter');
 
-      // Update streaks
-      setCurrentStreak((prev) => {
-        const next = prev + 1;
-        if (next >= 3) triggerUnlock('green_explorer');
-        if (next >= 7) triggerUnlock('forest_keeper');
-        
-        setLongestStreak((longest) => Math.max(longest, next));
-        return next;
-      });
-    }
+        setCurrentStreak((prevStreak) => {
+          const next = prevStreak + 1;
+          if (next >= 3) triggerUnlock('green_explorer');
+          if (next >= 7) triggerUnlock('forest_keeper');
+          setLongestStreak((longest) => Math.max(longest, next));
+          return next;
+        });
+      }
 
-    // Reset daily tasks for tomorrow (or simulate starting tomorrow)
+      if (totalDaysCount >= 25) triggerUnlock('eco_warrior');
+      if (totalDaysCount >= 100) triggerUnlock('planet_champion');
+
+      return nextRecords;
+    });
+
     setTasks((prev) => prev.map((t) => ({ ...t, completed: false })));
-    setExercise({ steps: 0, waterIntake: 0, walkingMinutes: 0, cyclingMinutes: 0, outdoorMinutes: 0 });
-
-    // Milestones unlocks on DayRecords size (simulating total days complete)
-    const totalDaysCount = Object.keys(dayRecords).length + 1;
-    if (totalDaysCount >= 25) triggerUnlock('eco_warrior');
-    if (totalDaysCount >= 100) triggerUnlock('planet_champion');
+    setExercise(INITIAL_EXERCISE);
   };
 
   const resetAllData = () => {
