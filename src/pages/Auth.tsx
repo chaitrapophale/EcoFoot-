@@ -71,7 +71,10 @@ export const Auth: React.FC = () => {
         </div>
 
         {success && (
-          <div className="mb-4 px-4 py-3 bg-emerald-500/15 border border-emerald-500/25 rounded-xl text-emerald-400 text-sm text-center">
+          <div
+            aria-live="polite"
+            className="mb-4 px-4 py-3 bg-emerald-500/15 border border-emerald-500/25 rounded-xl text-emerald-400 text-sm text-center"
+          >
             {success}
           </div>
         )}
@@ -83,6 +86,7 @@ export const Auth: React.FC = () => {
               <input
                 id="auth-username"
                 type="text"
+                autoComplete="username"
                 required={mode === 'signup'}
                 value={formData.username}
                 onChange={e => setFormData(p => ({ ...p, username: e.target.value }))}
@@ -97,6 +101,7 @@ export const Auth: React.FC = () => {
             <input
               id="auth-email"
               type="email"
+              autoComplete="email"
               required
               value={formData.email}
               onChange={e => setFormData(p => ({ ...p, email: e.target.value }))}
@@ -112,6 +117,7 @@ export const Auth: React.FC = () => {
                 <input
                   id="auth-password"
                   type={showPassword ? 'text' : 'password'}
+                  autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
                   required
                   value={formData.password}
                   onChange={e => setFormData(p => ({ ...p, password: e.target.value }))}
@@ -121,6 +127,7 @@ export const Auth: React.FC = () => {
                 <button
                   type="button"
                   id="toggle-password-btn"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
                 >

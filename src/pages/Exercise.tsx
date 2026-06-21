@@ -9,13 +9,36 @@ interface MetricCardProps {
   value: number;
   unit: string;
   target: number;
-  color: string;
+  color: 'emerald' | 'sky' | 'green' | 'amber';
   id: string;
   onIncrement: () => void;
   onDecrement: () => void;
 }
 
-  const MetricCard: React.FC<MetricCardProps> = ({
+const COLOR_STYLES = {
+  emerald: {
+    text: 'text-emerald-400',
+    badge: 'text-emerald-400 bg-emerald-500/10',
+    bar: 'bg-emerald-500'
+  },
+  sky: {
+    text: 'text-sky-400',
+    badge: 'text-sky-400 bg-sky-500/10',
+    bar: 'bg-sky-500'
+  },
+  green: {
+    text: 'text-green-400',
+    badge: 'text-green-400 bg-green-500/10',
+    bar: 'bg-green-500'
+  },
+  amber: {
+    text: 'text-amber-400',
+    badge: 'text-amber-400 bg-amber-500/10',
+    bar: 'bg-amber-500'
+  }
+} as const;
+
+const MetricCard: React.FC<MetricCardProps> = ({
   icon: Icon,
   label,
   value,
@@ -27,15 +50,16 @@ interface MetricCardProps {
   onDecrement
 }) => {
   const pct = Math.min(100, (value / target) * 100);
+  const styles = COLOR_STYLES[color];
 
   return (
     <div className="glass-panel rounded-2xl p-5 border border-white/5">
       <div className="flex items-center justify-between mb-3">
-        <div className={`flex items-center gap-2 text-${color}-400`}>
+        <div className={`flex items-center gap-2 ${styles.text}`}>
           <Icon className="w-5 h-5" />
           <span className="text-slate-300 text-sm font-medium">{label}</span>
         </div>
-        <span className={`text-xs text-${color}-400 bg-${color}-500/10 px-2.5 py-0.5 rounded-full`}>
+        <span className={`text-xs px-2.5 py-0.5 rounded-full ${styles.badge}`}>
           {Math.round(pct)}%
         </span>
       </div>
@@ -45,7 +69,7 @@ interface MetricCardProps {
           <Minus className="w-3.5 h-3.5" />
         </button>
         <div className="flex-1 text-center">
-          <span className={`text-2xl font-bold text-${color}-400`}>{value}</span>
+          <span className={`text-2xl font-bold ${styles.text}`}>{value}</span>
           <span className="text-slate-500 text-xs ml-1">{unit}</span>
         </div>
         <button id={`${id}-increment-btn`} onClick={onIncrement} className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 transition-all">
@@ -55,7 +79,7 @@ interface MetricCardProps {
 
       <div className="h-1.5 bg-white/8 rounded-full overflow-hidden">
         <motion.div
-          className={`h-full bg-${color}-500 rounded-full`}
+          className={`h-full ${styles.bar} rounded-full`}
           animate={{ width: `${pct}%` }}
           transition={{ duration: 0.5 }}
         />

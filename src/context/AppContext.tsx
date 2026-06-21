@@ -1,5 +1,49 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+const STORAGE_KEYS = {
+  user: 'ecofoot_user',
+  tasks: 'ecofoot_tasks',
+  exercise: 'ecofoot_exercise',
+  dayRecords: 'ecofoot_day_records',
+  achievements: 'ecofoot_achievements',
+  currentStreak: 'ecofoot_current_streak',
+  longestStreak: 'ecofoot_longest_streak',
+  restoredCount: 'ecofoot_restored_count',
+  journeyType: 'ecofoot_journey_type'
+} as const;
+
+const safeReadStorage = <T,>(key: string, fallback: T): T => {
+  if (typeof window === 'undefined') return fallback;
+
+  try {
+    const saved = window.localStorage.getItem(key);
+    if (!saved) return fallback;
+    return (JSON.parse(saved) as T) ?? fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+const safeWriteStorage = (key: string, value: unknown) => {
+  if (typeof window === 'undefined') return;
+
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // Ignore storage write failures so the app keeps working in restricted environments.
+  }
+};
+
+const safeRemoveStorage = (key: string) => {
+  if (typeof window === 'undefined') return;
+
+  try {
+    window.localStorage.removeItem(key);
+  } catch {
+    // Ignore removal failures.
+  }
+};
+
 export interface Task {
   id: string;
   name: string;
@@ -95,90 +139,87 @@ export const getTodayDateString = () => {
 };
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<{ username: string; email: string; isGuest: boolean } | null>(() => {
-    const saved = localStorage.getItem('ecofoot_user');
-    return saved ? JSON.parse(saved) : null;
-  });
+  const [user, setUser] = useState<{ username: string; email: string; isGuest: boolean } | null>(() =>
+    safeReadStorage(STORAGE_KEYS.user, null)
+  );
 
-  const [tasks, setTasks] = useState<Task[]>(() => {
-    const saved = localStorage.getItem('ecofoot_tasks');
-    return saved ? JSON.parse(saved) : DEFAULT_TASKS;
-  });
+  const [tasks, setTasks] = useState<Task[]>(() =>
+    safeReadStorage(STORAGE_KEYS.tasks, DEFAULT_TASKS)
+  );
 
-  const [exercise, setExercise] = useState<ExerciseLog>(() => {
-    const saved = localStorage.getItem('ecofoot_exercise');
-    return saved ? JSON.parse(saved) : { steps: 0, waterIntake: 0, walkingMinutes: 0, cyclingMinutes: 0, outdoorMinutes: 0 };
-  });
+  const [exercise, setExercise] = useState<ExerciseLog>(() =>
+    safeReadStorage(STORAGE_KEYS.exercise, {
+      steps: 0,
+      waterIntake: 0,
+      walkingMinutes: 0,
+      cyclingMinutes: 0,
+      outdoorMinutes: 0
+    })
+  );
 
-  const [dayRecords, setDayRecords] = useState<Record<string, DayRecord>>(() => {
-    const saved = localStorage.getItem('ecofoot_day_records');
-    return saved ? JSON.parse(saved) : {};
-  });
+  const [dayRecords, setDayRecords] = useState<Record<string, DayRecord>>(() =>
+    safeReadStorage(STORAGE_KEYS.dayRecords, {})
+  );
 
-  const [achievements, setAchievements] = useState<Achievement[]>(() => {
-    const saved = localStorage.getItem('ecofoot_achievements');
-    return saved ? JSON.parse(saved) : INITIAL_ACHIEVEMENTS;
-  });
+  const [achievements, setAchievements] = useState<Achievement[]>(() =>
+    safeReadStorage(STORAGE_KEYS.achievements, INITIAL_ACHIEVEMENTS)
+  );
 
-  const [currentStreak, setCurrentStreak] = useState<number>(() => {
-    const saved = localStorage.getItem('ecofoot_current_streak');
-    return saved ? parseInt(saved, 10) : 0;
-  });
+  const [currentStreak, setCurrentStreak] = useState<number>(() =>
+    safeReadStorage(STORAGE_KEYS.currentStreak, 0)
+  );
 
-  const [longestStreak, setLongestStreak] = useState<number>(() => {
-    const saved = localStorage.getItem('ecofoot_longest_streak');
-    return saved ? parseInt(saved, 10) : 0;
-  });
+  const [longestStreak, setLongestStreak] = useState<number>(() =>
+    safeReadStorage(STORAGE_KEYS.longestStreak, 0)
+  );
 
-  const [footprintsRestoredCount, setFootprintsRestoredCount] = useState<number>(() => {
-    const saved = localStorage.getItem('ecofoot_restored_count');
-    return saved ? parseInt(saved, 10) : 0;
-  });
+  const [footprintsRestoredCount, setFootprintsRestoredCount] = useState<number>(() =>
+    safeReadStorage(STORAGE_KEYS.restoredCount, 0)
+  );
 
-  const [journeyType, setJourneyType] = useState<'ai' | 'custom' | null>(() => {
-    const saved = localStorage.getItem('ecofoot_journey_type');
-    return saved ? (saved as 'ai' | 'custom') : null;
-  });
+  const [journeyType, setJourneyType] = useState<'ai' | 'custom' | null>(() =>
+    safeReadStorage(STORAGE_KEYS.journeyType, null)
+  );
 
   const [showUnlockCelebration, setShowUnlockCelebration] = useState<Achievement | null>(null);
 
   // Sync state to LocalStorage
   useEffect(() => {
-    if (user) localStorage.setItem('ecofoot_user', JSON.stringify(user));
-    else localStorage.removeItem('ecofoot_user');
+    if (user) safeWriteStorage(STORAGE_KEYS.user, user);
+    else safeRemoveStorage(STORAGE_KEYS.user);
   }, [user]);
 
   useEffect(() => {
-    localStorage.setItem('ecofoot_tasks', JSON.stringify(tasks));
+    safeWriteStorage(STORAGE_KEYS.tasks, tasks);
   }, [tasks]);
 
   useEffect(() => {
-    localStorage.setItem('ecofoot_exercise', JSON.stringify(exercise));
+    safeWriteStorage(STORAGE_KEYS.exercise, exercise);
   }, [exercise]);
 
   useEffect(() => {
-    localStorage.setItem('ecofoot_day_records', JSON.stringify(dayRecords));
+    safeWriteStorage(STORAGE_KEYS.dayRecords, dayRecords);
   }, [dayRecords]);
 
   useEffect(() => {
-    localStorage.setItem('ecofoot_achievements', JSON.stringify(achievements));
+    safeWriteStorage(STORAGE_KEYS.achievements, achievements);
   }, [achievements]);
 
   useEffect(() => {
-    localStorage.setItem('ecofoot_current_streak', currentStreak.toString());
+    safeWriteStorage(STORAGE_KEYS.currentStreak, currentStreak);
   }, [currentStreak]);
 
   useEffect(() => {
-    localStorage.setItem('ecofoot_longest_streak', longestStreak.toString());
+    safeWriteStorage(STORAGE_KEYS.longestStreak, longestStreak);
   }, [longestStreak]);
 
   useEffect(() => {
-    localStorage.setItem('ecofoot_restored_count', footprintsRestoredCount.toString());
+    safeWriteStorage(STORAGE_KEYS.restoredCount, footprintsRestoredCount);
   }, [footprintsRestoredCount]);
 
   useEffect(() => {
-    if (journeyType) localStorage.setItem('ecofoot_journey_type', journeyType);
-    else localStorage.removeItem('ecofoot_journey_type');
+    if (journeyType) safeWriteStorage(STORAGE_KEYS.journeyType, journeyType);
+    else safeRemoveStorage(STORAGE_KEYS.journeyType);
   }, [journeyType]);
 
   // Dynamic achievement unlock check
@@ -204,8 +245,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setJourneyType(null);
     setTasks(DEFAULT_TASKS);
     setExercise({ steps: 0, waterIntake: 0, walkingMinutes: 0, cyclingMinutes: 0, outdoorMinutes: 0 });
-    setCurrentStreak(0);
+    setDayRecords({});
     setAchievements(INITIAL_ACHIEVEMENTS);
+    setCurrentStreak(0);
+    setLongestStreak(0);
+    setFootprintsRestoredCount(0);
+    setShowUnlockCelebration(null);
   };
 
   const setJourney = (type: 'ai' | 'custom') => {
@@ -326,7 +371,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const resetAllData = () => {
-    localStorage.clear();
+    Object.values(STORAGE_KEYS).forEach((key) => safeRemoveStorage(key));
     setUser(null);
     setTasks(DEFAULT_TASKS);
     setExercise({ steps: 0, waterIntake: 0, walkingMinutes: 0, cyclingMinutes: 0, outdoorMinutes: 0 });

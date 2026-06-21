@@ -4,6 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Sparkles, Check } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
+interface GeneratedTask {
+  name: string;
+  category: 'transportation' | 'food' | 'energy' | 'shopping' | 'nature' | 'exercise' | 'recycling' | 'water';
+  points: number;
+}
+
 interface Question {
   id: string;
   text: string;
@@ -73,8 +79,8 @@ const questions: Question[] = [
   }
 ];
 
-const generateTasks = (answers: Record<string, string>) => {
-  const tasks = [];
+const generateTasks = (answers: Record<string, string>): GeneratedTask[] => {
+  const tasks: GeneratedTask[] = [];
 
   if (answers.transportation !== 'bike' && answers.transportation !== 'walk') {
     tasks.push({ name: 'Use public transport or cycle today', category: 'transportation' as const, points: 25 });
@@ -121,7 +127,7 @@ export const AIJourney: React.FC = () => {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [generating, setGenerating] = useState(false);
   const [generated, setGenerated] = useState(false);
-  const [generatedTasks, setGeneratedTasks] = useState<Array<{ name: string; category: string }>>([]);
+  const [generatedTasks, setGeneratedTasks] = useState<GeneratedTask[]>([]);
 
   const currentQ = questions[step];
   const progress = ((step) / questions.length) * 100;
@@ -138,7 +144,7 @@ export const AIJourney: React.FC = () => {
       const tasks = generateTasks(newAnswers);
       setTimeout(() => {
         setGeneratedTasks(tasks);
-        tasks.forEach(t => addTask(t.name, t.category as any));
+        tasks.forEach((task) => addTask(task.name, task.category));
         setJourney('ai');
         setGenerating(false);
         setGenerated(true);

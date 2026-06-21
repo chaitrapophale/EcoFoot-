@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useApp } from '../context/AppContext';
+import { useApp, type DayRecord } from '../context/AppContext';
 import { LivingFootprint } from '../components/LivingFootprint';
 
 interface Milestone {
@@ -21,9 +21,9 @@ const MILESTONES: Milestone[] = [
 ];
 
 // Generate mock trail from day records
-const generateTrailFootprints = (dayRecords: Record<string, any>, totalDays: number) => {
+const generateTrailFootprints = (dayRecords: Record<string, DayRecord>, totalDays: number) => {
   // Create an array of completed days + simulated past days for visual richness
-  const days = Object.values(dayRecords).map((record: any) => ({
+  const days = Object.values(dayRecords).map((record) => ({
     date: record.dateString,
     restorationPct: record.restorationPercentage,
     restored: record.restored

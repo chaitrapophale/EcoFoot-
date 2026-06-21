@@ -15,6 +15,29 @@ const fadeUp = {
   })
 };
 
+const featureStyles = {
+  emerald: {
+    card: 'bg-emerald-500/15 border-emerald-500/20',
+    icon: 'text-emerald-400'
+  },
+  green: {
+    card: 'bg-green-500/15 border-green-500/20',
+    icon: 'text-green-400'
+  },
+  teal: {
+    card: 'bg-teal-500/15 border-teal-500/20',
+    icon: 'text-teal-400'
+  },
+  sky: {
+    card: 'bg-sky-500/15 border-sky-500/20',
+    icon: 'text-sky-400'
+  },
+  amber: {
+    card: 'bg-amber-500/15 border-amber-500/20',
+    icon: 'text-amber-400'
+  }
+} as const;
+
 const features = [
   { icon: Leaf, title: 'Living Footprint', desc: 'Watch your daily footprint transform from polluted land into a thriving miniature forest as you complete sustainable actions.', color: 'emerald' },
   { icon: TreePine, title: 'Forest Trail', desc: 'Build a winding forest path one restored day at a time. Each completed day grows into a blooming miniature ecosystem.', color: 'green' },
@@ -123,22 +146,25 @@ export const Home: React.FC = () => {
 
         {/* Feature Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((feature, i) => (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-80px' }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="glass-panel glass-card-hover rounded-2xl p-6"
-            >
-              <div className={`w-12 h-12 rounded-xl bg-${feature.color}-500/15 border border-${feature.color}-500/20 flex items-center justify-center mb-4`}>
-                <feature.icon className={`w-6 h-6 text-${feature.color}-400`} />
-              </div>
-              <h3 className="text-white font-semibold text-lg mb-2">{feature.title}</h3>
-              <p className="text-slate-400 text-sm leading-relaxed">{feature.desc}</p>
-            </motion.div>
-          ))}
+          {features.map((feature, i) => {
+            const styles = featureStyles[feature.color as keyof typeof featureStyles];
+            return (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-80px' }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                className="glass-panel glass-card-hover rounded-2xl p-6"
+              >
+                <div className={`w-12 h-12 rounded-xl ${styles.card} flex items-center justify-center mb-4`}>
+                  <feature.icon className={`w-6 h-6 ${styles.icon}`} />
+                </div>
+                <h3 className="text-white font-semibold text-lg mb-2">{feature.title}</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">{feature.desc}</p>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 

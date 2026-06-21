@@ -6,9 +6,15 @@ import { Flame, Star, Calendar, Leaf } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const TITLES = ['Seedling', 'Green Explorer', 'Eco Warrior', 'Nature Guardian', 'Forest Keeper', 'Earth Protector', 'Planet Champion'];
+const STAT_STYLES = {
+  orange: 'text-orange-400',
+  amber: 'text-amber-400',
+  emerald: 'text-emerald-400',
+  teal: 'text-teal-400'
+} as const;
 
 export const Profile: React.FC = () => {
-  const { user, currentStreak, longestStreak, footprintsRestoredCount, achievements, tasks, dayRecords } = useApp();
+  const { user, currentStreak, longestStreak, footprintsRestoredCount, achievements, tasks, dayRecords, exercise } = useApp();
   const navigate = useNavigate();
 
   if (!user) {
@@ -29,7 +35,11 @@ export const Profile: React.FC = () => {
   const completedCount = tasks.filter(t => t.completed).length;
   const totalCount = tasks.length;
   const taskRatio = totalCount > 0 ? completedCount / totalCount : 0;
-  const restorationPct = Math.round(taskRatio * 80);
+  const stepsRatio = Math.min(1, exercise.steps / 10000);
+  const waterRatio = Math.min(1, exercise.waterIntake / 2000);
+  const outdoorRatio = Math.min(1, exercise.outdoorMinutes / 30);
+  const exerciseRatio = (stepsRatio + waterRatio + outdoorRatio) / 3;
+  const restorationPct = Math.min(100, Math.round((taskRatio * 80) + (exerciseRatio * 20)));
 
   const unlockedCount = achievements.filter(a => a.unlocked).length;
   const ecoTitle = TITLES[Math.min(unlockedCount, TITLES.length - 1)];
@@ -83,8 +93,8 @@ export const Profile: React.FC = () => {
             transition={{ delay: i * 0.08 }}
             className="glass-panel rounded-2xl p-4 text-center border border-white/5"
           >
-            <stat.icon className={`w-5 h-5 text-${stat.color}-400 mx-auto mb-2`} />
-            <div className={`text-2xl font-bold text-${stat.color}-400`}>{stat.value}</div>
+            <stat.icon className={`w-5 h-5 ${STAT_STYLES[stat.color as keyof typeof STAT_STYLES]} mx-auto mb-2`} />
+            <div className={`text-2xl font-bold ${STAT_STYLES[stat.color as keyof typeof STAT_STYLES]}`}>{stat.value}</div>
             <div className="text-slate-600 text-xs">{stat.label}</div>
           </motion.div>
         ))}
